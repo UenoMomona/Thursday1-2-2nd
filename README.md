@@ -20,4 +20,4 @@ CREATE TABLE `bbs_entries` (
 
 ### ブラウザからのアクセス
 以下のURLから掲示板にアクセスすることができます
-|http:// { サーバーのアドレス } /bbsimagetest.php
+> http:// { サーバーのアドレス } /bbsimagetest.php
