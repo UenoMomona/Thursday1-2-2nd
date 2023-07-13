@@ -1,13 +1,13 @@
 # システム開発
 *木曜日1,2限*
 
-##画像投稿掲示板
+## 画像投稿掲示板
 
-###起動方法
+### 起動方法
 `docker compose up`を実行する
 
-###テーブルの作成
-各コンテナが起動している状態で、`docker compose exec mysql mysql`で、MySQLクライアントを起動します
+### テーブルの作成
+各コンテナが起動している状態で、`docker compose exec mysql mysql`で、MySQLクライアントを起動します<br>
 以下のSQLを実行し、テーブルを作成します
 ```sql
 CREATE TABLE `bbs_entries` (
@@ -18,6 +18,6 @@ CREATE TABLE `bbs_entries` (
     );
 ```
 
-###ブラウザからのアクセス
+### ブラウザからのアクセス
 以下のURLから掲示板にアクセスすることができます
-| http:// { サーバーのアドレス } /bbsimagetest.php
+|http:// { サーバーのアドレス } /bbsimagetest.php
