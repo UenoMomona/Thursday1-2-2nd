@@ -22,3 +22,7 @@ RUN install -o www-data -g www-data -d /var/www/upload/image/
 #         "upload_max_filesize = 5M\n" \
 #         "post_max_size = 5M\n" \
 #         > /usr/local/etc/php/conf.d/uploads.ini
+
+RUN apk add git
+RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis
+RUN docker-php-ext-install redis
