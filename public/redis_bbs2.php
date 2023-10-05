@@ -17,7 +17,7 @@ if(!empty($_POST['body'])){
 
   $value = json_encode($bodys);
   $redis->set($key, strval($value));
-  return header('Location: ./redis_bbs.php');
+  return header('Location: ./redis_bbs22.php');
 }
 ?>
 
@@ -27,7 +27,7 @@ if(!empty($_POST['body'])){
 </form>
 <?php if($bodys !== []): ?>
   <?php foreach($bodys as $body): ?>
-    <p>投稿：<?= $body ?></p>
+    <p>投稿：<?= nl2br(htmlspecialchars($body)) ?></p>
     <hr>
   <?php endforeach; ?>
 <?php endif; ?>

@@ -24,4 +24,4 @@ if($redis->exists($key)){
   <textarea name="body"></textarea>
   <button type="submit">投稿</button>
 </form>
-<p>投稿：<?= $body ?></p>
+<p>投稿：<?= nl2br(htmlspecialchars($body)) ?></p>
