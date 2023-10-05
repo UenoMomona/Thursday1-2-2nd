@@ -1,0 +1,41 @@
+body{
+  width:80%;
+  margin:10px auto;
+}
+
+p{
+  text-align: center;
+}
+div{
+  display: flex;
+}
+
+a.before{
+  display: block;
+  width: 50%;
+  text-align: left;
+}
+a.after {
+  display: block;
+  width: 50%;
+  text-align:right;
+}
+.before {
+  width:50%;
+}
+
+form{
+  display: flex;
+  width: 60%;
+  align-items: flex-end;
+  margin: auto;
+}
+textarea{
+  margin:5px;
+  flex-grow: 2;
+  height: 50px;
+}
+button{
+  margin: 5px;
+  height: 30px;
+}
