@@ -37,7 +37,6 @@ $select_sth->execute([
 ]);
 
 $user = $select_sth->fetch();
-
 ?>
 
 <h1>ログイン完了</h1>
@@ -57,4 +56,5 @@ $user = $select_sth->fetch();
   <dt>名前</dt>
   <dd><?= htmlspecialchars($user['name']) ?></dd>
 </dl>
+<a href="update.php">編集</a>
 
