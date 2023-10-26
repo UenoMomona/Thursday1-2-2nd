@@ -24,7 +24,14 @@ if( !empty($_POST['email']) && !empty($_POST['password'] )) {
   // $correct_password = hash('sha256', $_POST['password']) === $user['password'];
   $password_hash = mb_substr($user['password'], 0, 64); // 0から64文字分がハッシュ化されたところ
   $salt = mb_substr($user['password'], 64, 64); //64から64文字分がsalt
-  $correct_password = hash('sha256', $_POST['password'] . $salt ) === $password_hash;
+  
+  //ストレッチング
+  $pass = $_POST['password'] . $salt;
+  for($i = 0; $i < 100; $i++){
+    $pass = hash('sha256', $pass);
+  }
+
+  $correct_password = $pass === $password_hash;
 
   if( !$correct_password ){
     header("HTTP/1.1 302 Found");
