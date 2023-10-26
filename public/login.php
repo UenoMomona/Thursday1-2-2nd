@@ -21,7 +21,10 @@ if( !empty($_POST['email']) && !empty($_POST['password'] )) {
   }
 
   // パスワードが正しいかチェック
-  $correct_password = hash('sha256', $_POST['password']) === $user['password'];
+  // $correct_password = hash('sha256', $_POST['password']) === $user['password'];
+  $password_hash = mb_substr($user['password'], 0, 64); // 0から64文字分がハッシュ化されたところ
+  $salt = mb_substr($user['password'], 64, 64); //64から64文字分がsalt
+  $correct_password = hash('sha256', $_POST['password'] . $salt ) === $password_hash;
 
   if( !$correct_password ){
     header("HTTP/1.1 302 Found");
