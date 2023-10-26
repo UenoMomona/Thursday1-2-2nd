@@ -22,7 +22,7 @@ if( !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password
   $insert_sth->execute([
     ':name' => $_POST['name'],
     ':email' => $_POST['email'],
-    ':password' => $_POST['password'],
+    ':password' => hash('sha256', $_POST['password']),
   ]);
 
   // リダイレクト

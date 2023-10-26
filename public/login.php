@@ -21,7 +21,7 @@ if( !empty($_POST['email']) && !empty($_POST['password'] )) {
   }
 
   // パスワードが正しいかチェック
-  $correct_password = $_POST['password'] === $user['password'];
+  $correct_password = hash('sha256', $_POST['password']) === $user['password'];
 
   if( !$correct_password ){
     header("HTTP/1.1 302 Found");
