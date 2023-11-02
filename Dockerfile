@@ -17,11 +17,7 @@ RUN docker-php-ext-install pdo_mysql
 
 RUN install -o www-data -g www-data -d /var/www/upload/image/
 
-
-#RUN echo "file_uploads = On\n" \
-#         "upload_max_filesize = 5M\n" \
-#         "post_max_size = 5M\n" \
-#         > /usr/local/etc/php/conf.d/uploads.ini
+COPY ./php.ini ${PHP_INI_DIR}/php.ini
 
 RUN apk add git
 RUN git clone https://github.com/phpredis/phpredis.git /usr/src/php/ext/redis

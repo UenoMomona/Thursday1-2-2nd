@@ -1,9 +1,12 @@
 <?php
 
+
 $dbh = new PDO('mysql:host=mysql;dbname=techc', 'root', '');
 
 if( !empty($_POST['email']) && !empty($_POST['password'] )) {
   
+  session_start();
+
   // emailから会員情報を取ってくる
   // 同じemailで複数の会員情報が登録されている場合は一番新しいもの一つを正とする
   $select_sth = $dbh->prepare('SELECT * FROM users WHERE email = :email ORDER BY id DESC LIMIT 1;');
@@ -40,27 +43,9 @@ if( !empty($_POST['email']) && !empty($_POST['password'] )) {
   }
 
   //セッションのIDの取得　なければ新規作成
-  $session_cookie_name = 'session_id';
-  $session_id = $_COOKIE[$session_cookie_name] ?? base64_encode(random_bytes(64));
-  if(!isset( $_COOKIE[$session_cookie_name] )) {
-    setcookie($session_cookie_name, $session_id );
-  }
+  $session_id = session_id();
 
-  $redis = new Redis();
-  $redis->connect('redis', 6379);
-
-  // redisのkey
-  $redis_session_key = "session-" . $session_id;
-
-  // redisからvalueの読み込み
-  $session_values = $redis->exists($redis_session_key)
-    ? json_decode($redis->get($redis_session_key), true)
-    : [];
-
-  // valueに会員のidを登録
-  $session_values['login_user_id'] = $user['id'];
-  // redisに登録
-  $redis->set($redis_session_key, json_encode($session_values));
+  $_SESSION['login_user_id'] = $user['id'];
 
   //ログイン完了画面にリダイレクト
   header("HTTP/1.1 302 Found");
