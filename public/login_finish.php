@@ -41,6 +41,30 @@ $user = $select_sth->fetch();
   <dd><?= htmlspecialchars($user['email']) ?></dd>
   <dt>名前</dt>
   <dd><?= htmlspecialchars($user['name']) ?></dd>
+  <dd><a href="update.php">名前変更</a>
+  <dt>アイコン</dt>
+  <dd>
+    <?php if( empty($user['icon_filename']) ): ?>
+    現在未設定
+    <?php else: ?>
+    <img src="/image/<?= $user['icon_filename'] ?>"
+      style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
+    <?php endif; ?>
+  </dd>
+  <dd>
+    <a href="./setting/icon.php">アイコン編集</a>
+  </dd>
+  <dt>自己紹介</dt>
+  <dd>
+    <?php if( empty($user['self_introduction'])): ?>
+    現在未設定
+    <?php else: ?>
+    <?= nl2br(htmlspecialchars($user['self_introduction'])) ?>
+    <?php endif; ?>
+  </dd>
+  <dd>
+    <a href="./setting/introduction.php">紹介文編集</a>
+  </dd>
 </dl>
 <a href="update.php">編集</a>
 
