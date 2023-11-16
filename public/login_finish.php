@@ -29,6 +29,7 @@ $user = $select_sth->fetch();
 
 <p>
   ログイン完了しました!
+  <a href="./bbs.php">掲示板はこちらから</a>
 </p>
 <hr>
 <p>
@@ -66,5 +67,3 @@ $user = $select_sth->fetch();
     <a href="./setting/introduction.php">紹介文編集</a>
   </dd>
 </dl>
-<a href="update.php">編集</a>
-

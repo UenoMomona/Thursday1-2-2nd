@@ -35,7 +35,8 @@ if( !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['password
 ?>
 
 <h1>会員登録</h1>
-
+<p>会員登録済みの人は<a href="./login.php">ログイン</a>しましょう</p>
+<hr>
 <?php if(!empty($_GET['error'])): ?>
 <div style="color: red;">
   同一のメールアドレスで登録することはできません!
