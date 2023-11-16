@@ -34,7 +34,7 @@ if(isset($_POST['body']) && !empty($_SESSION['login_user_id'])){
 
   
 //投稿一覧を取得
-$select_sth = $dbh->prepare('SELECT bbs_user_entries.*, users.name AS user_name FROM bbs_user_entries INNER JOIN users ON bbs_user_entries.user_id = users.id ORDER BY bbs_user_entries.created_at DESC');
+$select_sth = $dbh->prepare('SELECT bbs_user_entries.*, users.name AS user_name, users.icon_filename AS user_icon FROM bbs_user_entries INNER JOIN users ON bbs_user_entries.user_id = users.id ORDER BY bbs_user_entries.created_at DESC');
 $select_sth->execute();
 
 
@@ -80,6 +80,10 @@ function bodyFilter( string $body ): string
       投稿者
     </dt>
     <dd>
+      <?php if(!empty($entry['user_icon'])): ?>
+        <img src="/image/<?= $entry['user_icon'] ?>"
+          style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
+      <?php endif; ?>
       <?= htmlspecialchars($entry['user_name']) ?>
       (ID: <?= htmlspecialchars($entry['user_id']) ?>)
     </dd>
