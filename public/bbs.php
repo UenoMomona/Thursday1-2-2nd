@@ -54,6 +54,7 @@ function bodyFilter( string $body ): string
 <?php if(empty($_SESSION['login_user_id'])): ?>
   <p>投稿するには<a href="./login.php">ログイン</a>が必要です</p>
 <?php else: ?>
+  <p>現在ログイン中 (<a href="./setting/index.php">設定画面はこちら</a>)
   <form method="POST" action"./bbs.php">
     <textarea name="body" required></textarea>
 
@@ -80,12 +81,14 @@ function bodyFilter( string $body ): string
       投稿者
     </dt>
     <dd>
-      <?php if(!empty($entry['user_icon'])): ?>
-        <img src="/image/<?= $entry['user_icon'] ?>"
-          style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
-      <?php endif; ?>
-      <?= htmlspecialchars($entry['user_name']) ?>
-      (ID: <?= htmlspecialchars($entry['user_id']) ?>)
+      <a href="profile.php?user_id=<?= $entry['user_id']; ?>">
+        <?php if(!empty($entry['user_icon'])): ?>
+          <img src="/image/<?= $entry['user_icon'] ?>"
+            style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
+        <?php endif; ?>
+        <?= htmlspecialchars($entry['user_name']) ?>
+        (ID: <?= htmlspecialchars($entry['user_id']) ?>)
+      </a>
     </dd>
     <dt>日時</dt>
     <dd><?= $entry['created_at'] ?></dd>

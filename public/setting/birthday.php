@@ -16,28 +16,22 @@ $select_sth->execute([
 ]);
 $user = $select_sth->fetch();
 
-if (isset($_POST['introduction'])){
-  $update_sth = $dbh->prepare('UPDATE users SET self_introduction = :introduction WHERE id = :id;');
+if (isset($_POST['birthday'])){
+  $update_sth = $dbh->prepare('UPDATE users SET birthday = :birthday WHERE id = :id;');
   $update_sth->execute([
     ':id' => $user['id'],
-    ':introduction' => $_POST['introduction'],
+    ':birthday' => $_POST['birthday'],
   ]);
   header('HTTP/1.1 302 Found');
-  header('Location: ./introduction.php');
+  header('Location: ./birthday.php');
   return;
 }
 ?>
 
-<h1>自己紹介設定・変更</h1>
-
-<?php if(empty($user['self_introduction'])): ?>
-  現在未設定
-<?php else: ?>
-  <?= nl2br(htmlspecialchars($user['self_introduction'])) ?>
-<?php endif; ?>
+<h1>誕生日設定・変更</h1>
 
 <form method="POST">
-  <textarea name="introduction" id="introductionInput" maxlength="1000"><?= (empty($user['self_introduction']))? '' : (htmlspecialchars($user['self_introduction'])); ?></textarea>
+  <input type="date" name="birthday" value="<?= htmlspecialchars($user['birthday']) ?>">
   <button type="submit" id="btn">変更</button>
 </form>
 <a href="./index.php">プロフィールに戻る</a>

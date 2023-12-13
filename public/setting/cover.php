@@ -30,27 +30,27 @@ if (isset($_POST['image_base64'])){
   file_put_contents($filepath, $image_binary);
 
   // DBにfilenameを登録
-  $update_sth = $dbh->prepare('UPDATE users SET icon_filename = :icon_filename WHERE id = :id;');
+  $update_sth = $dbh->prepare('UPDATE users SET cover_filename = :cover_filename WHERE id = :id;');
   $update_sth->execute([
-    ':icon_filename' => $image_filename,
+    ':cover_filename' => $image_filename,
     ':id' => $user['id'],
   ]);
 
   header('HTTP/1.1 302 Found');
-  header('Location: ./icon.php');
+  header('Location: ./cover.php');
   return;
 }
 ?>
 
 
-<h1>アイコン設定</h1>
+<h1>カバー画像設定</h1>
 
 <div>
-  <?php if( empty($user['icon_filename']) ): ?>
+  <?php if( empty($user['cover_filename']) ): ?>
   現在未設定
   <?php else: ?>
-  <img src="/image/<?= $user['icon_filename'] ?>"
-      style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
+  <img src="/image/<?= $user['cover_filename'] ?>"
+      style="width: 100%; height:100px; object-fit: cover;">
   <?php endif; ?>
 </div>
 

@@ -30,7 +30,7 @@ if(!empty($_POST['name'])){
   ]);
 
   header("HTTP/1.1 302 Found");
-  header("Location: ./login_finish.php");
+  header("Location: ./name.php");
   return;
 }
 ?>
@@ -40,3 +40,4 @@ if(!empty($_POST['name'])){
   <input type="text" name="name" value="<?= $user['name'] ?>">
   <button type="submit">決定</button>
 </form>
+<a href="./index.php">設定一覧に戻る</a>
