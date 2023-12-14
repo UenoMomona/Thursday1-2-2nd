@@ -34,9 +34,17 @@ if(isset($_POST['body']) && !empty($_SESSION['login_user_id'])){
 
   
 //投稿一覧を取得
-$select_sth = $dbh->prepare('SELECT bbs_user_entries.*, users.name AS user_name, users.icon_filename AS user_icon FROM bbs_user_entries INNER JOIN users ON bbs_user_entries.user_id = users.id ORDER BY bbs_user_entries.created_at DESC');
-$select_sth->execute();
-
+$sql = 'SELECT bbs_user_entries.*, users.name AS user_name, users.icon_filename AS user_icon'
+    . ' FROM bbs_user_entries'
+    . ' INNER JOIN users ON bbs_user_entries.user_id = users.id'
+    . ' WHERE bbs_user_entries.user_id in '
+    . ' ( SELECT followee_user_id FROM user_relationships WHERE follower_user_id = :login_user_id)'
+    . ' OR bbs_user_entries.user_id = :login_user_id'
+    . ' ORDER BY bbs_user_entries.created_at DESC;';
+$select_sth = $dbh->prepare($sql);
+$select_sth->execute([
+  ':login_user_id' => $_SESSION['login_user_id']
+  ]);
 
 // bodyのhtmlを出力するための関数
 function bodyFilter( string $body ): string
@@ -68,11 +76,8 @@ function bodyFilter( string $body ): string
 <?php endif; ?>
 
 <hr>
-<a href="./timeline_1.php">タイムライン(1)を表示</a>
-<a href="./timeline_2.php">タイムライン(2)を表示</a>
-<a href="./timeline_3.php">タイムライン(3)を表示</a>
+<a href="./bbs.php">全投稿を表示する</a>
 <hr>
-
 <?php foreach($select_sth as $entry): ?>
   <dl style="margin-bottom: 1em; padding-bottom: 1em; border-bottom: 1px solid #ccc;">
     <dt id="entry<?= htmlspecialchars($entry['id']) ?>">

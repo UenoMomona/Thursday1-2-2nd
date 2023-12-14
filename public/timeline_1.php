@@ -34,8 +34,25 @@ if(isset($_POST['body']) && !empty($_SESSION['login_user_id'])){
 
   
 //投稿一覧を取得
-$select_sth = $dbh->prepare('SELECT bbs_user_entries.*, users.name AS user_name, users.icon_filename AS user_icon FROM bbs_user_entries INNER JOIN users ON bbs_user_entries.user_id = users.id ORDER BY bbs_user_entries.created_at DESC');
-$select_sth->execute();
+$sql = 'SELECT * FROM user_relationships WHERE follower_user_id = :follower;';
+$target_select_sth = $dbh->prepare($sql);
+$target_select_sth->execute([
+  ':follower' => $_SESSION['login_user_id'],
+]);
+
+$target_ids[] = $_SESSION['login_user_id'];
+foreach($target_select_sth->fetchAll() as $target){
+  $target_ids[] = $target['followee_user_id'];
+}  
+
+
+$sql = 'SELECT bbs_user_entries.*, users.name AS user_name, users.icon_filename AS user_icon'
+    . ' FROM bbs_user_entries'
+    . ' INNER JOIN users ON bbs_user_entries.user_id = users.id'
+    . ' WHERE bbs_user_entries.user_id IN (' . substr(str_repeat('?,', count($target_ids)), 0, -1) . ')'
+    . ' ORDER BY bbs_user_entries.created_at DESC;';
+$select_sth = $dbh->prepare($sql);
+$select_sth->execute($target_ids);
 
 
 // bodyのhtmlを出力するための関数
@@ -68,11 +85,8 @@ function bodyFilter( string $body ): string
 <?php endif; ?>
 
 <hr>
-<a href="./timeline_1.php">タイムライン(1)を表示</a>
-<a href="./timeline_2.php">タイムライン(2)を表示</a>
-<a href="./timeline_3.php">タイムライン(3)を表示</a>
+<a href="./bbs.php">全投稿を表示する</a>
 <hr>
-
 <?php foreach($select_sth as $entry): ?>
   <dl style="margin-bottom: 1em; padding-bottom: 1em; border-bottom: 1px solid #ccc;">
     <dt id="entry<?= htmlspecialchars($entry['id']) ?>">
