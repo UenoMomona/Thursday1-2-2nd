@@ -1,5 +1,6 @@
 <?php
 
+session_start();
 if( isset($_GET['user_id']) ){
   
  $dbh = new PDO('mysql:host=mysql;dbname=techc', 'root', '');
@@ -26,6 +27,34 @@ $select_sth->execute([
 ]);
 $entries = $select_sth->fetchAll();
 //var_dump($entries);
+
+
+// ログイン中のユーザーがこの人をフォローしているかを調べる
+$relationship = null;
+
+if ( !empty($_SESSION['login_user_id'])){
+  $sql = 'SELECT * FROM user_relationships WHERE followee_user_id = :followee AND follower_user_id = :follower;';
+  $select_sth = $dbh->prepare($sql);
+  $select_sth->execute([
+    ':followee' => $user['id'],
+    ':follower' => $_SESSION['login_user_id'],
+  ]);
+
+  $relationship = $select_sth->fetch();
+}
+
+// ログイン中のユーザーがこの人にフォローされているかを調べる
+$is_follower = null;
+if (!empty($_SESSION['login_user_id'])){
+  $sql = 'SELECT * FROM user_relationships WHERE followee_user_id = :followee AND follower_user_id = :follower;';
+  $select_sth = $dbh->prepare($sql);
+  $select_sth->execute([
+    ':followee' => $_SESSION['login_user_id'],
+    ':follower' => $user['id'],
+  ]);
+
+  $is_follower = $select_sth->fetch();
+}
 
 // bodyのhtmlを出力するための関数
 function bodyFilter( string $body ): string
@@ -80,6 +109,15 @@ function bodyFilter( string $body ): string
   <?php endif; ?>
 </div>
 
+<?php if(!empty($is_follower)): ?>
+  <p>フォローされています</p>
+<?php endif; ?>
+
+<?php if(empty($relationship)): ?>
+  <a href="./follow.php?followee_user_id=<?= $user['id'] ?>">フォロー</a>
+<?php else: ?>
+  フォロー中
+<?php endif; ?>
 <hr>
 
 <?php foreach($entries as $entry): ?>

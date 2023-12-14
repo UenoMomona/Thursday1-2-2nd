@@ -34,6 +34,9 @@ $user = $select_sth->fetch();
   <dd><?= htmlspecialchars($user['name']) ?></dd>
 </dl>
 
+<p><a href="../follow_list.php">フォロー欄</a></p>
+<p><a href="../follower_list.php">フォロワ―欄</a></p>
+
 <ul>
   <li><a href="./name.php">名前設定</a></li>
   <li><a href="./icon.php">アイコン設定</a></li>
