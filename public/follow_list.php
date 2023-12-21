@@ -37,4 +37,4 @@ $followee_users = $select_sth->fetchAll();
   </li>
   <?php endforeach; ?>
 </ul>
-
+<a href="./setting/index.php">戻る</a>

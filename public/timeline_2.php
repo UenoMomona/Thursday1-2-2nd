@@ -4,7 +4,23 @@ $dbh = new PDO('mysql:host=mysql;dbname=techc', 'root', '');
 
 session_start();
 
-if(isset($_POST['body']) && !empty($_SESSION['login_user_id'])){
+// ログインされていない場合はログイン画面へ
+if( empty($_SESSION['login_user_id'])){
+    header("HTTP/1.1 302 Found");
+    header("Location: /login.php");
+    return;
+}
+
+// 現在のログイン情報を取得する
+$sql = 'SELECT * FROM users WHERE id = :id;';
+$user_select_sth = $dbh->prepare($sql);
+$user_select_sth->execute([
+  ':id' => $_SESSION['login_user_id'],
+]);
+$user = $user_select_sth->fetch();
+
+// 投稿がある場合
+if(isset($_POST['body'])){
 
   // 画像の投稿準備
   $image_filename = null;
@@ -28,7 +44,7 @@ if(isset($_POST['body']) && !empty($_SESSION['login_user_id'])){
   ]);
 
   header('HTTP/1.1 302 Found');
-  header('Location: ./bbs.php');
+  header('Location: ./timeline_2.php');
   return;
 }
 
@@ -61,10 +77,16 @@ function bodyFilter( string $body ): string
 ?>
 
 <?php if(empty($_SESSION['login_user_id'])): ?>
-  <p>投稿するには<a href="./login.php">ログイン</a>が必要です</p>
+  <p><a href="./login.php">ログイン</a>が必要です</p>
 <?php else: ?>
-  <p>現在ログイン中 (<a href="./setting/index.php">設定画面はこちら</a>)
-  <form method="POST" action"./bbs.php">
+  <p>
+    現在<?= htmlspecialchars($user['name']) ?>(ID : <?= $user['id'] ?>)さんでログイン中 
+  </p>
+  <a href="./setting/index.php">設定画面</a>
+   / 
+  <a href="./users.php">会員一覧</a>
+  <hr>
+  <form method="POST" action"./timeline_2.php">
     <textarea name="body" required></textarea>
 
     <div style="margin: 1em 0;">

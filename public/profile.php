@@ -109,14 +109,18 @@ function bodyFilter( string $body ): string
   <?php endif; ?>
 </div>
 
-<?php if(!empty($is_follower)): ?>
-  <p>フォローされています</p>
-<?php endif; ?>
-
-<?php if(empty($relationship)): ?>
-  <a href="./follow.php?followee_user_id=<?= $user['id'] ?>">フォロー</a>
+<?php if( $user['id'] === $_SESSION['login_user_id']): ?>
+  <a href="./setting/index.php">編集</a>
 <?php else: ?>
-  フォロー中
+  <?php if(!empty($is_follower)): ?>
+    <p>フォローされています</p>
+  <?php endif; ?>
+
+  <?php if(empty($relationship)): ?>
+    <a href="./follow.php?followee_user_id=<?= $user['id'] ?>">フォロー</a>
+  <?php else: ?>
+    フォロー中
+  <?php endif; ?>
 <?php endif; ?>
 <hr>
 
@@ -143,4 +147,4 @@ function bodyFilter( string $body ): string
 <?php endforeach ?>
 
 
-<a href="./bbs.php">掲示板に戻る</a>
+<a href="./timeline_2.php">タイムラインに戻る</a>

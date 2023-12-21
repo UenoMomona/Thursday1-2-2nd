@@ -29,7 +29,7 @@ $user = $select_sth->fetch();
 
 <p>
   ログイン完了しました!
-  <a href="./bbs.php">掲示板はこちらから</a>
+  <a href="./timeline_2.php">タイムラインはこちらから</a>
 </p>
 <hr>
 <p>
@@ -42,7 +42,6 @@ $user = $select_sth->fetch();
   <dd><?= htmlspecialchars($user['email']) ?></dd>
   <dt>名前</dt>
   <dd><?= htmlspecialchars($user['name']) ?></dd>
-  <dd><a href="update.php">名前変更</a>
   <dt>アイコン</dt>
   <dd>
     <?php if( empty($user['icon_filename']) ): ?>
@@ -52,9 +51,6 @@ $user = $select_sth->fetch();
       style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
     <?php endif; ?>
   </dd>
-  <dd>
-    <a href="./setting/icon.php">アイコン編集</a>
-  </dd>
   <dt>自己紹介</dt>
   <dd>
     <?php if( empty($user['self_introduction'])): ?>
@@ -62,8 +58,5 @@ $user = $select_sth->fetch();
     <?php else: ?>
     <?= nl2br(htmlspecialchars($user['self_introduction'])) ?>
     <?php endif; ?>
-  </dd>
-  <dd>
-    <a href="./setting/introduction.php">紹介文編集</a>
   </dd>
 </dl>
