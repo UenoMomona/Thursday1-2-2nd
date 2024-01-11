@@ -22,7 +22,7 @@ $user = $user_select_sth->fetch();
 
 $sql = 'SELECT bbs_user_entries.*, users.name AS user_name, users.icon_filename AS user_icon'
     . ' FROM bbs_user_entries'
-    . ' INNER JOIN users ON bbs_user_entries.user_id = :login_user_id'
+    . ' INNER JOIN users ON bbs_user_entries.user_id = users.id'
     . ' WHERE'
     . '   bbs_user_entries.user_id IN'
     . '     (SELECT followee_user_id FROM user_relationships WHERE follower_user_id = :login_user_id)'
@@ -54,8 +54,10 @@ foreach ( $select_sth as $entry){
   $result_entry = [
     'id' => $entry['id'],
     'user_name' => $entry['user_name'],
-    'user_profile_url' => '/profile.pgp?user_id=' . $entry['id'],
+    'user_profile_url' => '/profile.php?user_id=' . $entry['user_id'],
+    'user_icon' => empty($entry['user_icon']) ? '' : '/image/' . $entry['user_icon'],
     'body' => $entry['body'],
+    'body_image' => empty($entry['image_filename']) ? '' : '/image/' . $entry['image_filename'],
     'created_at' => $entry['created_at'],
   ];
   $result_entries[] = $result_entry;
