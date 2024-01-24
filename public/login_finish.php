@@ -29,7 +29,7 @@ $user = $select_sth->fetch();
 
 <p>
   ログイン完了しました!
-  <a href="./timeline_2.php">タイムラインはこちらから</a>
+  <a href="./timeline.php">タイムラインはこちらから</a>
 </p>
 <hr>
 <p>

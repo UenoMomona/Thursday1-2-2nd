@@ -10,7 +10,6 @@ if( isset($_GET['user_id']) ){
 ]);
 
 $user = $select_sth->fetch();
-//var_dump($user);
 }
 
 
@@ -21,13 +20,21 @@ if( empty($user) ){
 }
 
 // この会員の投稿を取得
-$select_sth = $dbh->prepare('SELECT * FROM bbs_user_entries WHERE user_id = :id;');
+$select_sth = $dbh->prepare('SELECT * FROM exam_bbs_entries WHERE user_id = :id;');
 $select_sth->execute([
   ':id' => $_GET['user_id']
 ]);
 $entries = $select_sth->fetchAll();
 //var_dump($entries);
-
+//画像を取得
+foreach( $entries as $i => $entry) {
+  $select_images = $dbh->prepare('SELECT image_filename FROM exam_bbs_images WHERE entry_id = :id;');
+  $select_images->execute([
+    ':id' => $entry['id']
+  ]);
+  $entry['image_filenames'] = $select_images->fetchAll(PDO::FETCH_ASSOC);
+  $entries[$i] = $entry;
+}
 
 // ログイン中のユーザーがこの人をフォローしているかを調べる
 $relationship = null;
@@ -68,83 +75,88 @@ function bodyFilter( string $body ): string
 }
 
 ?>
-<?php if( !empty($user['cover_filename'])): ?>
-<div style="
-    width: 100%;
-    height: 100px;
-    background: url('/image/<?= $user['cover_filename'] ?>') center;
-    background-size: cover;
-    ">
-</div>
-<?php endif; ?>
-<h1><?= $user['name'] ?> さん のプロフィール</h1>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/timeline_style.css">
+  <link rel="stylesheet" href="./css/profile.css">
+</head>
+<body>
+<div class="wrapper">
+  <?php if( !empty($user['cover_filename'])): ?>
+    <div class="cover" style="
+      background: url('/image/<?= $user['cover_filename'] ?>') center;
+      background-size: cover;
+      ">
+    </div>
+  <?php else: ?>
+    <div class="cover" style ="background: #333;"></div>
+  <?php endif; ?>
 
-
-<div>
   <?php if(empty($user['icon_filename'])): ?>
-  現在未設定
+    <div class="icon"></div>
   <?php else: ?>
-  <img src="/image/<?= $user['icon_filename'] ?>"
-    style="height: 5em; width: 5em; border-radius: 50%; object-fit: cover;">
-  <?php endif; ?>
-</div>
-
-<?php if(!empty($user['birthday'])): ?>
-<?php
-  $birthday = DateTime::createFromFormat('Y-m-d', $user['birthday']);
-  $today = new DateTime('now');
-?>
-  <?= $today->diff($birthday)->y ?>歳
-<?php endif; ?>
-
-<div>
-  <?php if(isset($user['self_introduction'])): ?>
-  <p>
-    <?= nl2br(htmlspecialchars($user['self_introduction'])) ?>
-  </p>
-  <?php else: ?>
-  <p>
-    自己紹介未設定
-  </p>
-  <?php endif; ?>
-</div>
-
-<?php if( $user['id'] === $_SESSION['login_user_id']): ?>
-  <a href="./setting/index.php">編集</a>
-<?php else: ?>
-  <?php if(!empty($is_follower)): ?>
-    <p>フォローされています</p>
+    <img class="icon" src="/image/<?= $user['icon_filename'] ?>">
   <?php endif; ?>
 
-  <?php if(empty($relationship)): ?>
-    <a href="./follow.php?followee_user_id=<?= $user['id'] ?>">フォロー</a>
-  <?php else: ?>
-    フォロー中
-  <?php endif; ?>
-<?php endif; ?>
+  <div class="user_info">
+    <p class="name"><?= $user['name'] ?></p>
+    <?php if(!empty($user['birthday'])): ?>
+      <?php
+        $birthday = DateTime::createFromFormat('Y-m-d', $user['birthday']);
+        $today = new DateTime('now');
+      ?>
+      <?= $today->diff($birthday)->y ?>歳
+    <?php endif; ?>
+
+    <?php if(isset($user['self_introduction'])): ?>
+      <p><?= nl2br(htmlspecialchars($user['self_introduction'])) ?></p>
+    <?php else: ?>
+      <p>自己紹介未設定</p>
+    <?php endif; ?>
+  </div>
 <hr>
-
-<?php foreach($entries as $entry): ?>
-  <dl style="margin-bottom: 1em; padding-bottom: 1em; border-bottom: 1px solid #ccc;">
-    <dt id="entry<?= htmlspecialchars($entry['id']) ?>">
-      番号
-    </dt>
-    <dd>
-      <?= htmlspecialchars($entry['id']) ?>
-    </dd>
-    <dt>日時</dt>
-    <dd><?= $entry['created_at'] ?></dd>
-    <dt>内容</dt>
-    <dd>
-      <?= bodyFilter($entry['body']) ?>
-      <?php if(!empty($entry['image_filename'])): ?>
-      <div>
-        <img src="/image/<?= $entry['image_filename'] ?>" style="max-height: 10em;">
-      </div>
+  <div class="follow_btn">
+  <?php if( isset($_SESSION['login_user_id']) ): ?>
+    <?php if( $user['id'] === $_SESSION['login_user_id']): ?>
+      <a href="./setting/index.php">編集</a>
+    <?php else: ?>
+      <?php if(empty($relationship)): ?>
+        <a href="./follow.php?followee_user_id=<?= $user['id'] ?>">フォロー</a>
+      <?php else: ?>
+        <p>フォロー中</p>
       <?php endif; ?>
-    </dd>
-  </dl>
+    <?php endif; ?>
+  <?php endif; ?>
+  </div>
+
+      <?php if(!empty($is_follower)): ?>
+        <p>フォローされています</p>
+      <?php endif; ?>
+
+  <?php foreach($entries as $entry): ?>
+    <div class='post'>
+      <a href="./profile.php?user_id=<?= $entry['user_id']?>">
+        <?php if( $user['icon_filename'] != "" ): ?>
+          <img src="/image/<?= $user['icon_filename'] ?>" class='user_icon'>
+        <?php else: ?>
+          <span class='dummy_icon'></span>
+        <?php endif; ?>
+        <span class='user_name'><?= $user['name'] ?></span>
+      </a>
+      <span class='updated_at'><?= $entry['updated_at'] ?></span>
+      <span class='body'><?= bodyFilter($entry['body'])?></span>
+      <?php if( $entry['image_filenames'] != [] ): ?>
+         <div class='images'>
+          <?php foreach ($entry['image_filenames'] as $image_file): ?>
+            <img src='/image/<?= $image_file['image_filename'] ?>' class='posted_image'>
+          <?php endforeach; ?>
+         </div>
+      <?php endif; ?>
+    </div>
 <?php endforeach ?>
-
-
-<a href="./timeline_2.php">タイムラインに戻る</a>
+</div>
+<a href="./timeline.php">タイムラインに戻る</a>

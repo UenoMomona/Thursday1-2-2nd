@@ -88,5 +88,5 @@ if( !empty( $_GET['search_name'] ) || !empty( $_GET['search_year_pre'] ) || !emp
     </div>
     <hr style="border: none; border-bottom: 1px solid gray;">
   <?php endforeach; ?>
-<a href="./timeline_2.php"?>タイムラインへ戻る</a>
+<a href="./timeline.php"?>タイムラインへ戻る</a>
 </body>
